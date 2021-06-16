@@ -12,9 +12,10 @@ import (
 
 type HttpService struct {
 	context.DefaultService
-	router     *gin.Engine
-	port       string
-	corsConfig cors.Config
+	router       *gin.Engine
+	openAccessed *gin.RouterGroup
+	port         string
+	corsConfig   cors.Config
 }
 
 const HTTP_SERVICE = "http_base"
@@ -45,6 +46,28 @@ func (svc *HttpService) Configure(ctx *context.Context) error {
 }
 
 func (svc *HttpService) Start() error {
+
+	err := svc.registerRoutes()
+	if err != nil {
+		return err
+	}
+
 	return svc.router.Run(svc.port) //Blocks
 
+}
+
+func (svc *HttpService) registerRoutes() error {
+
+	svc.router = gin.Default()
+	svc.router.Use(cors.New(svc.corsConfig))
+
+	//Define openAccessed route.
+	svc.openAccessed = svc.router.Group("/")
+	svc.openAccessed.GET("/ping", svc.ping) //PING/PONG
+
+	return nil
+}
+
+func (svc *HttpService) ping(c *gin.Context) {
+	c.JSON(200, "pong")
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"toy-project-be/common/context"
+	"toy-project-be/services"
 
 	"github.com/joho/godotenv"
 )
@@ -14,7 +15,9 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	ctx, err := context.NewCtx()
+	ctx, err := context.NewCtx(
+		&services.HttpService{},
+	)
 	if err != nil {
 		log.Fatalf(err.Error())
 		return
