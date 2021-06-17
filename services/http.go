@@ -53,7 +53,6 @@ func (svc *HttpService) Start() error {
 	}
 
 	return svc.router.Run(svc.port) //Blocks
-
 }
 
 func (svc *HttpService) registerRoutes() error {
